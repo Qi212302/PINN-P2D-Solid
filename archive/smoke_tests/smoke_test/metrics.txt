@@ -1,0 +1,7 @@
+RMSE against finite-volume reference: 2.80023459e-01
+Max error against finite-volume reference: 5.15848570e-01
+Final total loss: 6.73628935e-01
+Final PDE loss: 3.34094585e-01
+Final initial loss: 2.69051166e-03
+Final center BC loss: 2.90920023e-07
+Final flux BC loss: 2.85721207e-02

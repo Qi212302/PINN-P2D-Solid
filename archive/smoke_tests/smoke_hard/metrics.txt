@@ -1,0 +1,16 @@
+RMSE against finite-volume reference: 1.84778371e-02
+Max error against finite-volume reference: 4.09526825e-02
+Mass balance RMS error: 2.18510915e-02
+Mass balance max abs error: 3.69830703e-02
+Autograd PDE residual RMS: 2.78348940e-01
+Autograd PDE residual max abs: 6.70994412e-01
+Surface flux RMS error: 6.29361872e-02
+Surface flux max abs error: 1.99998090e-01
+Initial condition RMS error: 0.00000000e+00
+Initial condition max abs error: 0.00000000e+00
+Center symmetry max abs slope: 0.00000000e+00
+Final total loss: 3.82910731e-01
+Final PDE loss: 7.61897293e-02
+Final initial loss: 0.00000000e+00
+Final center BC loss: 0.00000000e+00
+Final flux BC loss: 7.66802503e-03
