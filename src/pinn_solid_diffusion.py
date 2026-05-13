@@ -48,6 +48,7 @@ class Config:
     adam_steps: int = 3000
     lbfgs_steps: int = 500
     learning_rate: float = 1e-3
+    flux_weight: float = 20.0
     seed: int = 2026
     output_dir: Path = Path("results")
 
@@ -174,7 +175,7 @@ def loss_terms(model: HardConstrainedPINN, pts: dict[str, torch.Tensor], config:
 
 def total_loss(model: HardConstrainedPINN, pts: dict[str, torch.Tensor], config: Config) -> tuple[torch.Tensor, dict[str, float]]:
     terms = loss_terms(model, pts, config)
-    weights = {"pde": 1.0, "initial": 0.0, "center": 0.0, "flux": 40.0}
+    weights = {"pde": 1.0, "initial": 0.0, "center": 0.0, "flux": config.flux_weight}
     loss = sum(weights[name] * value for name, value in terms.items())
     return loss, {name: float(value.detach().cpu()) for name, value in terms.items()}
 
@@ -440,6 +441,7 @@ def save_outputs(model: HardConstrainedPINN, history: list[dict[str, float]], co
     plt.close()
 
     with (config.output_dir / "metrics.txt").open("w", encoding="utf-8") as f:
+        f.write(f"Surface flux loss weight lambda_flux: {config.flux_weight:.8e}\n")
         f.write(f"RMSE against finite-volume reference: {rmse:.8e}\n")
         f.write(f"Max error against finite-volume reference: {max_error:.8e}\n")
         f.write(f"Mass balance RMS error: {float(np.sqrt(np.mean(mass_error**2))):.8e}\n")
@@ -478,6 +480,7 @@ def parse_args() -> Config:
     parser.add_argument("--n-boundary", type=int, default=Config.n_boundary)
     parser.add_argument("--hidden-width", type=int, default=Config.hidden_width)
     parser.add_argument("--hidden-layers", type=int, default=Config.hidden_layers)
+    parser.add_argument("--flux-weight", type=float, default=Config.flux_weight)
     parser.add_argument("--output-dir", type=Path, default=Config.output_dir)
     args = parser.parse_args()
     return Config(
@@ -489,6 +492,7 @@ def parse_args() -> Config:
         n_boundary=args.n_boundary,
         hidden_width=args.hidden_width,
         hidden_layers=args.hidden_layers,
+        flux_weight=args.flux_weight,
         output_dir=args.output_dir,
     )
 
@@ -498,7 +502,7 @@ def main() -> None:
     torch.manual_seed(config.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
-    print(f"Solving with tau_max={config.tau_max}, surface flux phi={config.phi}")
+    print(f"Solving with tau_max={config.tau_max}, surface flux phi={config.phi}, lambda_flux={config.flux_weight}")
 
     model = make_model(config).to(device)
     pts = sample_training_points(config, device)

@@ -1,0 +1,23 @@
+Surface flux loss weight lambda_flux: 1.00000000e+01
+RMSE against finite-volume reference: 2.29237156e-04
+Max error against finite-volume reference: 2.07707188e-03
+Mass balance RMS error: 1.84282533e-04
+Mass balance max abs error: 3.32484308e-04
+Autograd PDE residual RMS: 6.27577133e-02
+Autograd PDE residual max abs: 6.11527687e+00
+Surface flux RMS error: 1.82063153e-02
+Surface flux max abs error: 1.99342209e-01
+Diagnostics excluding the incompatible startup corner tau < 1e-4:
+Autograd PDE residual RMS, tau >= 1e-4: 3.09432217e-02
+Autograd PDE residual p99 abs, tau >= 1e-4: 5.82306625e-02
+Autograd PDE residual max abs, tau >= 1e-4: 2.79596353e+00
+Surface flux RMS error, tau >= 1e-4: 1.75723176e-03
+Surface flux max abs error, tau >= 1e-4: 1.02679501e-02
+Initial condition RMS error: 0.00000000e+00
+Initial condition max abs error: 0.00000000e+00
+Center symmetry max abs slope: 0.00000000e+00
+Final total loss: 2.55678586e-03
+Final PDE loss: 3.07808438e-04
+Final initial loss: 0.00000000e+00
+Final center BC loss: 0.00000000e+00
+Final flux BC loss: 2.24897742e-04

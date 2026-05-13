@@ -9,3 +9,5 @@
 - `06b_surface_flux_boundary_validation_zoom.png`: Post-startup zoom of the surface flux boundary validation.
 - `07_volume_average_mass_error.png`: Mass-conservation error in volume-averaged concentration.
 - `08_pde_residual_statistics.png`: RMS and 99th-percentile PDE residual statistics versus time and radius.
+- `09_flux_weight_sensitivity_metrics.png`: Sensitivity of RMSE, flux error, PDE loss, and mass error to the flux-loss weight.
+- `10_flux_weight_constraint_balance.png`: Relative balance between reference error, PDE loss, and flux-boundary error.

@@ -75,7 +75,7 @@ c_PINN(x, 0) = 0
 因此，初始条件和球心对称边界在网络结构上严格满足。训练损失仅对控制方程残差和表面通量边界进行优化：
 
 ```text
-L = L_pde + 40 L_flux
+L = L_pde + 20 L_flux
 ```
 
 其中：
@@ -87,6 +87,8 @@ L_flux = mean[(∂c/∂x(1,tau) + phi)²]
 
 网络采用 `4` 个隐藏层，每层 `64` 个神经元，激活函数为 `tanh`。训练过程先使用 Adam 优化，再使用 L-BFGS 精修。为提高初始阶段和表面通量边界附近的精度，配点中包含早期时间加密采样和表面边界时间网格采样。
 
+为避免表面通量损失权重仅凭经验指定，本文进一步进行了权重敏感性实验。保持网络结构、随机种子、采样策略和优化设置一致，分别取 `lambda_flux = 1, 5, 10, 20, 40, 80, 100`。结果表明，较小权重能够获得较低的 PDE 残差，但表面通量边界误差偏大；较大权重可降低部分通量边界误差，但会提高整体参考解误差或 PDE 残差。综合参考解 RMSE、通量边界误差、质量守恒误差和 PDE 残差，本文选取 `lambda_flux = 20` 作为后续计算权重。
+
 ## 参考解与验证指标
 
 为验证 PINN 解的可信性，本文采用有限体积法作为参考解。有限体积离散直接基于球形控制体积分形式，能够保持扩散通量守恒。PINN 解在相同无量纲网格上与有限体积参考解比较。
@@ -94,10 +96,10 @@ L_flux = mean[(∂c/∂x(1,tau) + phi)²]
 当前计算得到的主要误差指标如下：
 
 ```text
-RMSE against finite-volume reference: 7.92434450e-04
-Max error against finite-volume reference: 1.92953038e-03
-Mass balance RMS error: 7.30423224e-04
-Mass balance max abs error: 1.20238572e-03
+RMSE against finite-volume reference: 4.73647226e-04
+Max error against finite-volume reference: 1.78702800e-03
+Mass balance RMS error: 4.24573755e-04
+Mass balance max abs error: 7.77321953e-04
 Initial condition RMS error: 0.00000000e+00
 Initial condition max abs error: 0.00000000e+00
 Center symmetry max abs slope: 0.00000000e+00
@@ -106,16 +108,16 @@ Center symmetry max abs slope: 0.00000000e+00
 对于表面通量边界，若包含 `tau≈0` 的不相容角点，全域最大误差会被角点放大。排除 `tau < 1e-4` 后，表面通量边界误差为：
 
 ```text
-Surface flux RMS error, tau >= 1e-4: 6.98540593e-04
-Surface flux max abs error, tau >= 1e-4: 3.47931077e-03
+Surface flux RMS error, tau >= 1e-4: 5.51013557e-04
+Surface flux max abs error, tau >= 1e-4: 1.77273745e-03
 ```
 
 排除初始角点后的 PDE 残差指标为：
 
 ```text
-Autograd PDE residual RMS, tau >= 1e-4: 2.65104716e-02
-Autograd PDE residual p99 abs, tau >= 1e-4: 8.09368059e-02
-Autograd PDE residual max abs, tau >= 1e-4: 8.27352684e-01
+Autograd PDE residual RMS, tau >= 1e-4: 3.99137549e-02
+Autograd PDE residual p99 abs, tau >= 1e-4: 7.41190384e-02
+Autograd PDE residual max abs, tau >= 1e-4: 3.14771110e+00
 ```
 
 其中最大残差仍主要出现在靠近早期时间和表面边界的局部区域；从误差场和有限体积参考解对比看，该局部残差并未导致浓度解出现明显偏移。
